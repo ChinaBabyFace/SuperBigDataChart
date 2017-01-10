@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/BigDataChart/bigdatachart.iml" filepath="$PROJECT_DIR$/BigDataChart/bigdatachart.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SuperBigDataChart.iml" filepath="$PROJECT_DIR$/SuperBigDataChart.iml" />
+      <module fileurl="file://$PROJECT_DIR$/UtilsBase/UtilsBase.iml" filepath="$PROJECT_DIR$/UtilsBase/UtilsBase.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+    </modules>
+  </component>
+</project>
