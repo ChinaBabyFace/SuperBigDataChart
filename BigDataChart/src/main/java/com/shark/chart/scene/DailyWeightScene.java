@@ -244,8 +244,9 @@ public class DailyWeightScene extends DailyScene {
                         startX + dashedLinePaint.measureText("" + dataCache.get(i).getY()) * 0.5f,
                         startY - 50,
                         dashedLinePaint, String.format("%.1f", dataCache.get(i).getY()));
-
-
+                /*在长按状态下绘制十字交叉线*/
+                canvas.drawLine(startX, 0, startX, yAxisBottom, assistLinePaint);
+                canvas.drawLine(0, startY, getScreenWidth(), startY, assistLinePaint);
             }
             //每帧只需绘制一次
             if (i == 0) {
@@ -283,18 +284,8 @@ public class DailyWeightScene extends DailyScene {
                     startX + calendarTextPaint.measureText(dataCache.get(i).getXAxisPoint()) * 0.5f,
                     canvas.getHeight() - calendarGap,
                     calendarTextPaint, dataCache.get(i).getXAxisPoint());
-            //绘制辅助线
-            if (DateKit.dateConvertStringByPattern(dataCache.get(i).getCalendar().getTime(), DateKit.PATTERN3).
-                    equals(DateKit.dateConvertStringByPattern(new Date(), DateKit.PATTERN3))) {
-                assistLinePaint.setColor(Color.GRAY);
-                canvas.drawLine(startX, 0, startX, yAxisBottom, assistLinePaint);
-                //                canvas.drawBitmap(todayTip, startX - todayTip.getWidth() * 0.5f,
-                //                        canvas.getHeight() - calendarHeight - todayTip.getHeight() - 30,
-                // calendarPaint);
-                canvas.drawText("体重", startX, startY - 30, dashedLineDotePaintText);
-            }
 
-            //绘制体重函数线
+            //绘制体重函数线即当前点和下一个点的连接线
             if (i != dataCache.size() - 1) {
                 dashedLinePaint.setColor(dashedLineColor);
                 float endX = startX + xAxisGraduationWidth;
@@ -308,15 +299,7 @@ public class DailyWeightScene extends DailyScene {
 
             //设置节点画笔
             dashedLineDotePaint.setStyle(Paint.Style.FILL);
-            //                体重的节点
-            if (dataCache.get(i).getCalendar().get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR)
-                    &&
-                    dataCache.get(i).getCalendar().get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH)
-                    &&
-                    dataCache.get(i).getCalendar().get(Calendar.DAY_OF_MONTH) == Calendar.getInstance().get(Calendar
-                            .DAY_OF_MONTH)) {
-                dashedLineDotePaint.setColor(assistLineColor);
-            }
+
             /*判断是否有数据*/
             if (dataCache.get(i).getDataType() == HAS_DATA) {
                 dashedLineDotePaint.setColor(assistLineColor);
@@ -335,21 +318,6 @@ public class DailyWeightScene extends DailyScene {
             //体重的节点值
             canvas.drawText(String.format("%.1f", dataCache.get(i).getY()), startX + 25, startY + 25,
                     dashedLineDotePaintText);
-
-            //            if (dataCache.get(i).getCalendar().get(Calendar.YEAR) == Calendar.getInstance().get
-            // (Calendar.YEAR) &&
-            //                    dataCache.get(i).getCalendar().get(Calendar.MONTH) == Calendar.getInstance().get
-            // (Calendar.MONTH)
-            //                    && dataCache.get(i).getCalendar().get(Calendar.DAY_OF_MONTH) == Calendar
-            // .getInstance().get
-            //                    (Calendar.DAY_OF_MONTH)) {
-            //                canvas.drawLine(startX - dashedLineDoteRadius + 3, startY, startX +
-            // dashedLineDoteRadius - 3, startY,
-            //                        dashedLineDotePaint);
-            //                canvas.drawLine(startX, startY - dashedLineDoteRadius + 3, startX, startY +
-            // dashedLineDoteRadius - 3,
-            //                        dashedLineDotePaint);
-            //            }
         }
 
         float centerValueYAxisTop = centerY - 35 * 0.5f;
