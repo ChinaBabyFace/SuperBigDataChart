@@ -293,23 +293,20 @@ public class DailyWeightScene extends DailyScene {
                 // calendarPaint);
                 canvas.drawText("体重", startX, startY - 30, dashedLineDotePaintText);
             }
-            if (!DateKit.dateConvertStringByPattern(dataCache.get(i).getCalendar().getTime(), DateKit.PATTERN3).
-                    equals(DateKit.dateConvertStringByPattern(new Date(), DateKit.PATTERN3))) {
-                //绘制体重函数线
-                if (i != dataCache.size() - 1) {
-                    dashedLinePaint.setColor(dashedLineColor);
-                    float endX = startX + xAxisGraduationWidth;
-                    float endY = centerY + (centerValue - dataCache.get(i + 1).getY()) * yAxisGraduationHeight;
-                    canvas.drawLine(startX, startY, endX, endY, dashedLinePaint);
-                }
+
+            //绘制体重函数线
+            if (i != dataCache.size() - 1) {
+                dashedLinePaint.setColor(dashedLineColor);
+                float endX = startX + xAxisGraduationWidth;
+                float endY = centerY + (centerValue - dataCache.get(i + 1).getY()) * yAxisGraduationHeight;
+                canvas.drawLine(startX, startY, endX, endY, dashedLinePaint);
             }
 
             //绘制函数节点
             dashedLineDotePaint.setColor(Color.WHITE);
             dashedLineDotePaint.setStyle(Paint.Style.FILL);
 
-            //                设置节点画笔
-            //                    dashedLineDotePaint.setColor(Color.GREEN);
+            //设置节点画笔
             dashedLineDotePaint.setStyle(Paint.Style.FILL);
             //                体重的节点
             if (dataCache.get(i).getCalendar().get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR)
@@ -328,26 +325,31 @@ public class DailyWeightScene extends DailyScene {
             }
             /*画里面的红色填充背景，有数据为红色，无数据为白色*/
             canvas.drawCircle(startX, startY, dashedLineDoteRadius - 5, dashedLineDotePaint);
-            //                节点的灰色边框画笔
+            //节点的灰色边框画笔
             dashedLineDotePaint.setColor(dashedLineDoteBorderColor);
             dashedLineDotePaint.setStyle(Paint.Style.STROKE);
             dashedLineDotePaint.setStrokeWidth(2);
-            //                体重的红色边框
+            //体重的红色边框
             dashedLineDotePaint.setColor(dashedLineColor);
             canvas.drawCircle(startX, startY, dashedLineDoteRadius - 3, dashedLineDotePaint);
-            //                体重的节点值
+            //体重的节点值
             canvas.drawText(String.format("%.1f", dataCache.get(i).getY()), startX + 25, startY + 25,
                     dashedLineDotePaintText);
 
-            if (dataCache.get(i).getCalendar().get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
-                    dataCache.get(i).getCalendar().get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH)
-                    && dataCache.get(i).getCalendar().get(Calendar.DAY_OF_MONTH) == Calendar.getInstance().get
-                    (Calendar.DAY_OF_MONTH)) {
-                canvas.drawLine(startX - dashedLineDoteRadius + 3, startY, startX + dashedLineDoteRadius - 3, startY,
-                        dashedLineDotePaint);
-                canvas.drawLine(startX, startY - dashedLineDoteRadius + 3, startX, startY + dashedLineDoteRadius - 3,
-                        dashedLineDotePaint);
-            }
+            //            if (dataCache.get(i).getCalendar().get(Calendar.YEAR) == Calendar.getInstance().get
+            // (Calendar.YEAR) &&
+            //                    dataCache.get(i).getCalendar().get(Calendar.MONTH) == Calendar.getInstance().get
+            // (Calendar.MONTH)
+            //                    && dataCache.get(i).getCalendar().get(Calendar.DAY_OF_MONTH) == Calendar
+            // .getInstance().get
+            //                    (Calendar.DAY_OF_MONTH)) {
+            //                canvas.drawLine(startX - dashedLineDoteRadius + 3, startY, startX +
+            // dashedLineDoteRadius - 3, startY,
+            //                        dashedLineDotePaint);
+            //                canvas.drawLine(startX, startY - dashedLineDoteRadius + 3, startX, startY +
+            // dashedLineDoteRadius - 3,
+            //                        dashedLineDotePaint);
+            //            }
         }
 
         float centerValueYAxisTop = centerY - 35 * 0.5f;
