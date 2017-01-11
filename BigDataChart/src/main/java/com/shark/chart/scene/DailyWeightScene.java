@@ -100,7 +100,21 @@ public class DailyWeightScene extends DailyScene {
         this.initCanvas();
     }
 
+    @Override
+    public void initScene() {
+        dataCache = new ArrayList<>();
+        if (getScreenHeight() > getScreenWidth()) {
+            yAxisGraduationHeight = getScreenHeight() / 10;
+            xAxisGraduationWidth = getScreenWidth() / 7;
+        } else {
+            yAxisGraduationHeight = getScreenHeight() / 7;
+            xAxisGraduationWidth = getScreenWidth() / 10;
+        }
+    }
+
     public void initCanvas() {
+
+
         yAxisGraduationTextPaint = new Paint();
         calendarPaint = new Paint();
         calendarTextPaint = new Paint();
@@ -184,9 +198,9 @@ public class DailyWeightScene extends DailyScene {
         //绘制日历内容
         centerX = canvas.getWidth() * 0.5f;
         centerX += moveX;
-//        if (isAutoScroll) {
-//            moveX *= (1 + 0.2 * 0.8);
-//        }
+        //        if (isAutoScroll) {
+        //            moveX *= (1 + 0.2 * 0.8);
+        //        }
         if (Math.abs(moveX) > xAxisGraduationWidth * DAY_CACHE_COUNT) {
             LogKit.e(this, "Loading data");
             if (getDataLoader() != null) {
@@ -216,7 +230,8 @@ public class DailyWeightScene extends DailyScene {
             if (isPointCanDrag(startX, startY)) {
                 LogKit.e(this, "Touch moveY:" + moveY);
                 LogKit.e(this, "Touch getY:" + dataCache.get(i).getY());
-                if (Math.abs(moveY) > 0 && centerY + (centerValue - dataCache.get(i).getY()) * yAxisGraduationHeight < yAxisBottom) {
+                if (Math.abs(moveY) > 0 && centerY + (centerValue - dataCache.get(i).getY()) * yAxisGraduationHeight
+                        < yAxisBottom) {
                     dataCache.get(i).setY(dataCache.get(i).getY() - moveY / yAxisGraduationHeight);
                     touchPoint = dataCache.get(i);
                     dataCache.get(i).setDataType(HAS_DATA);
@@ -242,18 +257,25 @@ public class DailyWeightScene extends DailyScene {
                 drawTextInCenter(canvas,
                         calendarGap + 150,
                         canvas.getHeight() - 3 * calenderDayTextSize,
-                        calendarTextPaint.measureText("" + dataCache.get(dataCache.size() / 2).getCalendar().get(Calendar.YEAR)),
+                        calendarTextPaint.measureText("" + dataCache.get(dataCache.size() / 2).getCalendar().get
+                                (Calendar.YEAR)),
                         canvas.getHeight() - calendarGap - calenderDayTextSize - 2 * calendarGap - calendarGap,
                         calendarTextPaint, "" + dataCache.get(dataCache.size() / 2).getCalendar().get(Calendar.YEAR));
                 //绘制日历的月
                 drawTextInCenter(canvas,
-                        2 * +calendarGap + calendarTextPaint.measureText("" + dataCache.get(dataCache.size() / 2).getCalendar().get(Calendar.YEAR)) + 150,
+                        2 * +calendarGap + calendarTextPaint.measureText("" + dataCache.get(dataCache.size() / 2)
+                                .getCalendar().get(Calendar.YEAR)) + 150,
                         canvas.getHeight() - 3 * calenderDayTextSize,
-                        2 * +calendarGap + calendarTextPaint.measureText("" + dataCache.get(dataCache.size() / 2).getCalendar().get(Calendar.YEAR)) + calendarTextPaint.measureText("" + (dataCache.get(dataCache.size() / 2).getCalendar().get(Calendar.MONTH) + 1)),
+                        2 * +calendarGap + calendarTextPaint.measureText("" + dataCache.get(dataCache.size() / 2)
+                                .getCalendar().get(Calendar.YEAR)) + calendarTextPaint.measureText("" + (dataCache
+                                .get(dataCache.size() / 2).getCalendar().get(Calendar.MONTH) + 1)),
                         canvas.getHeight() - calendarGap - calenderDayTextSize - 2 * calendarGap - calendarGap,
-                        calendarTextPaint, "/" + (dataCache.get(dataCache.size() / 2).getCalendar().get(Calendar.MONTH) + 1));
+                        calendarTextPaint, "/" + (dataCache.get(dataCache.size() / 2).getCalendar().get(Calendar
+                                .MONTH) + 1));
                 //绘制日历的分割线
-                canvas.drawLine(0, canvas.getHeight() - calenderDayTextSize - 2 * calendarGap - calendarGap, canvas.getWidth(), canvas.getHeight() - calenderDayTextSize - 2 * calendarGap - calendarGap, calendarTextPaint);
+                canvas.drawLine(0, canvas.getHeight() - calenderDayTextSize - 2 * calendarGap - calendarGap, canvas
+                                .getWidth(), canvas.getHeight() - calenderDayTextSize - 2 * calendarGap - calendarGap,
+                        calendarTextPaint);
             }
             //绘制日历的日
             drawTextInCenter(canvas,
@@ -271,16 +293,14 @@ public class DailyWeightScene extends DailyScene {
                         canvas.getHeight() - calendarHeight - todayTip.getHeight() - 30, calendarPaint);
                 canvas.drawText("体重", startX, startY - 30, dashedLineDotePaintText);
             }
-            if (dataCache.get(i).isHasData()) {
-                if (!DateKit.dateConvertStringByPattern(dataCache.get(i).getCalendar().getTime(), DateKit.PATTERN3).
-                        equals(DateKit.dateConvertStringByPattern(new Date(), DateKit.PATTERN3))) {
-                    //绘制体重函数线
-                    if (i != dataCache.size() - 1) {
-                        dashedLinePaint.setColor(dashedLineColor);
-                        float endX = startX + xAxisGraduationWidth;
-                        float endY = centerY + (centerValue - dataCache.get(i + 1).getY()) * yAxisGraduationHeight;
-                        canvas.drawLine(startX, startY, endX, endY, dashedLinePaint);
-                    }
+            if (!DateKit.dateConvertStringByPattern(dataCache.get(i).getCalendar().getTime(), DateKit.PATTERN3).
+                    equals(DateKit.dateConvertStringByPattern(new Date(), DateKit.PATTERN3))) {
+                //绘制体重函数线
+                if (i != dataCache.size() - 1) {
+                    dashedLinePaint.setColor(dashedLineColor);
+                    float endX = startX + xAxisGraduationWidth;
+                    float endY = centerY + (centerValue - dataCache.get(i + 1).getY()) * yAxisGraduationHeight;
+                    canvas.drawLine(startX, startY, endX, endY, dashedLinePaint);
                 }
             }
 
@@ -288,40 +308,46 @@ public class DailyWeightScene extends DailyScene {
             dashedLineDotePaint.setColor(Color.WHITE);
             dashedLineDotePaint.setStyle(Paint.Style.FILL);
 
-            if (dataCache.get(i).isHasData()) {
-                //                设置节点画笔
-                //                    dashedLineDotePaint.setColor(Color.GREEN);
-                dashedLineDotePaint.setStyle(Paint.Style.FILL);
-                //                体重的节点
-                if (dataCache.get(i).getCalendar().get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) && dataCache.get(i).getCalendar().get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH)
-                        && dataCache.get(i).getCalendar().get(Calendar.DAY_OF_MONTH) == Calendar.getInstance().get(Calendar.DAY_OF_MONTH)) {
-                    dashedLineDotePaint.setColor(assistLineColor);
-                }
-                /*判断是否有数据*/
-                if (dataCache.get(i).getDataType() == HAS_DATA) {
-                    dashedLineDotePaint.setColor(assistLineColor);
-                } else if (dataCache.get(i).getDataType() == HAS_NO_DATA) {
-                    dashedLineDotePaint.setColor(Color.WHITE);
-                }
-                /*画里面的红色填充背景，有数据为红色，无数据为白色*/
-                canvas.drawCircle(startX, startY, dashedLineDoteRadius - 5, dashedLineDotePaint);
-                //                节点的灰色边框画笔
-                dashedLineDotePaint.setColor(dashedLineDoteBorderColor);
-                dashedLineDotePaint.setStyle(Paint.Style.STROKE);
-                dashedLineDotePaint.setStrokeWidth(2);
-                //                体重的红色边框
-                dashedLineDotePaint.setColor(dashedLineColor);
-                canvas.drawCircle(startX, startY, dashedLineDoteRadius-3, dashedLineDotePaint);
-                //                体重的节点值
-                canvas.drawText(String.format("%.1f", dataCache.get(i).getY()), startX + 25, startY + 25, dashedLineDotePaintText);
+            //                设置节点画笔
+            //                    dashedLineDotePaint.setColor(Color.GREEN);
+            dashedLineDotePaint.setStyle(Paint.Style.FILL);
+            //                体重的节点
+            if (dataCache.get(i).getCalendar().get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
+                    dataCache.get(i).getCalendar().get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH)
+                    && dataCache.get(i).getCalendar().get(Calendar.DAY_OF_MONTH) == Calendar.getInstance().get
+                    (Calendar.DAY_OF_MONTH)) {
+                dashedLineDotePaint.setColor(assistLineColor);
+            }
+            /*判断是否有数据*/
+            if (dataCache.get(i).getDataType() == HAS_DATA) {
+                dashedLineDotePaint.setColor(assistLineColor);
+            } else if (dataCache.get(i).getDataType() == HAS_NO_DATA) {
+                dashedLineDotePaint.setColor(Color.WHITE);
+            }
+            /*画里面的红色填充背景，有数据为红色，无数据为白色*/
+            canvas.drawCircle(startX, startY, dashedLineDoteRadius - 5, dashedLineDotePaint);
+            //                节点的灰色边框画笔
+            dashedLineDotePaint.setColor(dashedLineDoteBorderColor);
+            dashedLineDotePaint.setStyle(Paint.Style.STROKE);
+            dashedLineDotePaint.setStrokeWidth(2);
+            //                体重的红色边框
+            dashedLineDotePaint.setColor(dashedLineColor);
+            canvas.drawCircle(startX, startY, dashedLineDoteRadius - 3, dashedLineDotePaint);
+            //                体重的节点值
+            canvas.drawText(String.format("%.1f", dataCache.get(i).getY()), startX + 25, startY + 25,
+                    dashedLineDotePaintText);
 
-                if (dataCache.get(i).getCalendar().get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) && dataCache.get(i).getCalendar().get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH)
-                        && dataCache.get(i).getCalendar().get(Calendar.DAY_OF_MONTH) == Calendar.getInstance().get(Calendar.DAY_OF_MONTH)) {
-                    canvas.drawLine(startX-dashedLineDoteRadius+3,startY,startX+dashedLineDoteRadius-3,startY,dashedLineDotePaint);
-                    canvas.drawLine(startX,startY-dashedLineDoteRadius+3,startX,startY+dashedLineDoteRadius-3,dashedLineDotePaint);
-                }
+            if (dataCache.get(i).getCalendar().get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
+                    dataCache.get(i).getCalendar().get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH)
+                    && dataCache.get(i).getCalendar().get(Calendar.DAY_OF_MONTH) == Calendar.getInstance().get
+                    (Calendar.DAY_OF_MONTH)) {
+                canvas.drawLine(startX - dashedLineDoteRadius + 3, startY, startX + dashedLineDoteRadius - 3, startY,
+                        dashedLineDotePaint);
+                canvas.drawLine(startX, startY - dashedLineDoteRadius + 3, startX, startY + dashedLineDoteRadius - 3,
+                        dashedLineDotePaint);
             }
         }
+
         float centerValueYAxisTop = centerY - 35 * 0.5f;
         float centerValueYAxisBottom = centerY + 35 * 0.5f;
         //绘制左边纵坐标轴
@@ -337,10 +363,6 @@ public class DailyWeightScene extends DailyScene {
             isNeedResizeChart = false;
             resetChart(canvas);
         }
-    }
-
-    public void drawScene(Canvas canvas) {
-
     }
 
     public void resetChart(Canvas canvas) {
@@ -371,7 +393,7 @@ public class DailyWeightScene extends DailyScene {
         if (isWaiteLongPress && Math.abs(x - oldX) < 50 && Math.abs(y - oldY) < 50 && longPressTimeCounter < 500) {
             longPressTimeCounter += 15;
             LogKit.e(this, "Long pressing...");
-            if (longPressTimeCounter >= 350) {
+            if (longPressTimeCounter >= 200) {
                 LogKit.e(this, "Long press ok!");
                 isWaiteLongPress = false;
                 isLongPressing = true;
@@ -380,11 +402,6 @@ public class DailyWeightScene extends DailyScene {
             }
         }
         return isLongPressing && Math.abs(x - oldX) < 50;
-    }
-
-    @Override
-    public void initScene() {
-        dataCache = new ArrayList<>();
     }
 
     @Override

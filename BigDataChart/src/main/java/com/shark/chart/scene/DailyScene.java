@@ -14,7 +14,7 @@ import java.util.List;
  */
 public abstract class DailyScene extends SceneAdapter {
     //每次载入的数据量，以天为单位
-    public static int DAY_CACHE_COUNT = 21;
+    public static int DAY_CACHE_COUNT = 7;
     private DataLoader dataLoader;
 
     public DailyScene(Context context) {

@@ -38,7 +38,7 @@ package com.soaringcloud.kit;
  * @since 1.0
  */
 public class KitSettings {
-	public static final boolean IS_DEBUG_MODE = false;
+	public static final boolean IS_DEBUG_MODE = true;
 	public static final String APP_LOG_TAG = "<>";
-	public static final String FILE_PATH = "/nutritechinese";
+	public static final String FILE_PATH = "/shark";
 }

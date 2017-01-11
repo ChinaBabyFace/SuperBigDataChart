@@ -10,6 +10,7 @@ import android.view.SurfaceHolder.Callback;
 
 import com.shark.chart.engine.ChartThread;
 import com.shark.chart.scene.SceneAdapter;
+import com.soaringcloud.kit.box.LogKit;
 
 
 /**
@@ -48,6 +49,7 @@ public class ChartView extends GLSurfaceView implements Callback {
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width,
                                int height) {
+        LogKit.e(this,"surfaceChanged width:"+width+",height:"+height);
         if (getSceneAdapter() != null) {
             getSceneAdapter().setScreen(width, height);
         }

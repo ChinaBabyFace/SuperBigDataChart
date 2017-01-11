@@ -17,5 +17,6 @@ public interface ISurfaceView {
     void recycleScene();
 
     void onKeyDown(int keyCode, KeyEvent event);
+
     void notifyDataSetChanged();
 }
