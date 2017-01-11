@@ -1,14 +1,12 @@
 package com.shark.test;
 
 import android.app.Activity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.shark.chart.point.ChartDatePoint;
 import com.shark.chart.scene.DailyScene;
 import com.shark.chart.scene.DailyWeightScene;
 import com.shark.chart.view.ChartView;
-import com.soaringcloud.kit.box.LogKit;
 
 import java.util.ArrayList;
 import java.util.Calendar;

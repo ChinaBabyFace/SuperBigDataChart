@@ -289,8 +289,8 @@ public class DailyWeightScene extends DailyScene {
                     equals(DateKit.dateConvertStringByPattern(new Date(), DateKit.PATTERN3))) {
                 assistLinePaint.setColor(Color.GRAY);
                 canvas.drawLine(startX, 0, startX, yAxisBottom, assistLinePaint);
-                canvas.drawBitmap(todayTip, startX - todayTip.getWidth() * 0.5f,
-                        canvas.getHeight() - calendarHeight - todayTip.getHeight() - 30, calendarPaint);
+//                canvas.drawBitmap(todayTip, startX - todayTip.getWidth() * 0.5f,
+//                        canvas.getHeight() - calendarHeight - todayTip.getHeight() - 30, calendarPaint);
                 canvas.drawText("体重", startX, startY - 30, dashedLineDotePaintText);
             }
             if (!DateKit.dateConvertStringByPattern(dataCache.get(i).getCalendar().getTime(), DateKit.PATTERN3).
