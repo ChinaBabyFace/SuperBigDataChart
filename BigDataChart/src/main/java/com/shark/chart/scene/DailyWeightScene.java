@@ -17,6 +17,7 @@ import android.view.MotionEvent;
 
 import com.shark.chart.R;
 import com.shark.chart.point.ChartDatePoint;
+import com.shark.chart.util.ChartSettings;
 import com.soaringcloud.kit.box.DateKit;
 import com.soaringcloud.kit.box.DisplayKit;
 import com.soaringcloud.kit.box.LogKit;
@@ -87,8 +88,6 @@ public class DailyWeightScene extends DailyScene {
     private Vibrator vib;
     private OnChartDatePointChangedListener onChartDatePointChangedListener;
     private ChartDatePoint touchPoint;
-    private SoundPool sp;//声明一个SoundPool
-    private int music;//定义一个整型用load（）；来设置suondID
     private Bitmap todayTip;
     private Bitmap calendarIcon;
     private boolean isAutoScroll = false;
@@ -97,7 +96,6 @@ public class DailyWeightScene extends DailyScene {
         super(context);
         minValue = Math.round(preWeight) - 1;
         maxValue = Math.round(preWeight) + 1;
-        this.initCanvas();
     }
 
     @Override
@@ -110,10 +108,6 @@ public class DailyWeightScene extends DailyScene {
             yAxisGraduationHeight = getScreenHeight() / 7;
             xAxisGraduationWidth = getScreenWidth() / 10;
         }
-    }
-
-    public void initCanvas() {
-
 
         yAxisGraduationTextPaint = new Paint();
         calendarPaint = new Paint();
@@ -289,8 +283,9 @@ public class DailyWeightScene extends DailyScene {
                     equals(DateKit.dateConvertStringByPattern(new Date(), DateKit.PATTERN3))) {
                 assistLinePaint.setColor(Color.GRAY);
                 canvas.drawLine(startX, 0, startX, yAxisBottom, assistLinePaint);
-//                canvas.drawBitmap(todayTip, startX - todayTip.getWidth() * 0.5f,
-//                        canvas.getHeight() - calendarHeight - todayTip.getHeight() - 30, calendarPaint);
+                //                canvas.drawBitmap(todayTip, startX - todayTip.getWidth() * 0.5f,
+                //                        canvas.getHeight() - calendarHeight - todayTip.getHeight() - 30,
+                // calendarPaint);
                 canvas.drawText("体重", startX, startY - 30, dashedLineDotePaintText);
             }
             if (!DateKit.dateConvertStringByPattern(dataCache.get(i).getCalendar().getTime(), DateKit.PATTERN3).
@@ -390,18 +385,22 @@ public class DailyWeightScene extends DailyScene {
     }
 
     public boolean isPointCanDrag(float x, float y) {
-        if (isWaiteLongPress && Math.abs(x - oldX) < 50 && Math.abs(y - oldY) < 50 && longPressTimeCounter < 500) {
-            longPressTimeCounter += 15;
+        /*判断手指触动的点是否在圆圈内*/
+        boolean isInCircle = (Math.pow(Math.abs(x - oldX), 2) + Math.pow(Math.abs(y - oldY), 2))
+                <
+                Math.pow(dashedLineDoteRadius*2, 2);
+        if (isWaiteLongPress && isInCircle && longPressTimeCounter < 500) {
+            longPressTimeCounter += ChartSettings.TIME_IN_FRAME;
             LogKit.e(this, "Long pressing...");
-            if (longPressTimeCounter >= 200) {
+            if (longPressTimeCounter >= ChartSettings.LONG_PRESS_DURATION) {
                 LogKit.e(this, "Long press ok!");
                 isWaiteLongPress = false;
                 isLongPressing = true;
                 longPressTimeCounter = 0;
-                vib.vibrate(100);
+                vib.vibrate(ChartSettings.LONG_PRESS_VIBRATE_DURATION);
             }
         }
-        return isLongPressing && Math.abs(x - oldX) < 50;
+        return isLongPressing && Math.abs(x - oldX) < dashedLineDoteRadius*2;
     }
 
     @Override
