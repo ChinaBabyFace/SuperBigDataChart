@@ -92,11 +92,18 @@ public class DailyWeightScene extends DailyScene {
     private Bitmap calendarIcon;
     private boolean isAutoScroll = false;
 
-    public DailyWeightScene(Context context, float preWeight) {
+    public DailyWeightScene(Context context, float preWeight, DataLoader loader) {
         super(context);
         minValue = Math.round(preWeight) - 1;
         maxValue = Math.round(preWeight) + 1;
+        setDataLoader(loader);
     }
+
+    //    public DailyWeightScene(Context context, float preWeight) {
+    //        super(context);
+    //        minValue = Math.round(preWeight) - 1;
+    //        maxValue = Math.round(preWeight) + 1;
+    //    }
 
     @Override
     public void initScene() {
@@ -165,6 +172,10 @@ public class DailyWeightScene extends DailyScene {
         vib = (Vibrator) getContext().getSystemService(Service.VIBRATOR_SERVICE);
         todayTip = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.weight_today);
         calendarIcon = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.step_calendar);
+        /*加载初始数据*/
+        isNeedResizeChart = true;
+        dataCache.addAll(getDataLoader().getData(Calendar.getInstance(), DayType.RECENT_DAY, DAY_CACHE_COUNT * 3));
+        resetChart(getScreenWidth(), getScreenHeight());
     }
 
     @Override
@@ -179,12 +190,6 @@ public class DailyWeightScene extends DailyScene {
         //Y轴有限个刻度值在画布分布上的中心点
         float centerY = yAxisBottom - yAxisLength * 0.5f;
         /*----------------基础数据计算----------------*/
-
-        //检查是否有初始数据可供使用,若没有则载入初始数据
-        if (dataCache.isEmpty()) {
-            dataCache.addAll(getDataLoader().getData(Calendar.getInstance(), DayType.RECENT_DAY, DAY_CACHE_COUNT * 3));
-            resetChart(canvas);
-        }
 
         //绘制日历区域背景
         canvas.drawRect(0, yAxisBottom, canvas.getWidth(), canvas.getHeight(), calendarPaint);
@@ -307,10 +312,12 @@ public class DailyWeightScene extends DailyScene {
             //                    dashedLineDotePaint.setColor(Color.GREEN);
             dashedLineDotePaint.setStyle(Paint.Style.FILL);
             //                体重的节点
-            if (dataCache.get(i).getCalendar().get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
+            if (dataCache.get(i).getCalendar().get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR)
+                    &&
                     dataCache.get(i).getCalendar().get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH)
-                    && dataCache.get(i).getCalendar().get(Calendar.DAY_OF_MONTH) == Calendar.getInstance().get
-                    (Calendar.DAY_OF_MONTH)) {
+                    &&
+                    dataCache.get(i).getCalendar().get(Calendar.DAY_OF_MONTH) == Calendar.getInstance().get(Calendar
+                            .DAY_OF_MONTH)) {
                 dashedLineDotePaint.setColor(assistLineColor);
             }
             /*判断是否有数据*/
@@ -356,11 +363,11 @@ public class DailyWeightScene extends DailyScene {
         }
         if (isNeedResizeChart && !isLongPressing) {
             isNeedResizeChart = false;
-            resetChart(canvas);
+            resetChart(canvas.getWidth(), canvas.getHeight());
         }
     }
 
-    public void resetChart(Canvas canvas) {
+    public void resetChart(int canvasWidth, int canvasHeight) {
         minValue = dataCache.get(0).getY();
         maxValue = dataCache.get(0).getY();
         for (int j = 0; j < dataCache.size(); j++) {
@@ -371,8 +378,8 @@ public class DailyWeightScene extends DailyScene {
                 minValue = dataCache.get(j).getY();
             }
         }
-        if ((maxValue - minValue) * yAxisGraduationHeight != canvas.getHeight() * 0.5) {
-            yAxisGraduationHeight = canvas.getHeight() * 0.5f / (maxValue - minValue);
+        if ((maxValue - minValue) * yAxisGraduationHeight != canvasHeight * 0.5) {
+            yAxisGraduationHeight = canvasWidth * 0.5f / (maxValue - minValue);
             yAxisGraduationHalfCount = (int) (yAxisLength / yAxisGraduationHeight * 0.5f);
             if (yAxisGraduationHalfCount < yAxisLength / xAxisGraduationWidth * 0.5f) {
                 yAxisGraduationHalfCount = (int) (yAxisLength * 0.5f / xAxisGraduationWidth);
@@ -388,7 +395,7 @@ public class DailyWeightScene extends DailyScene {
         /*判断手指触动的点是否在圆圈内*/
         boolean isInCircle = (Math.pow(Math.abs(x - oldX), 2) + Math.pow(Math.abs(y - oldY), 2))
                 <
-                Math.pow(dashedLineDoteRadius*2, 2);
+                Math.pow(dashedLineDoteRadius * 2, 2);
         if (isWaiteLongPress && isInCircle && longPressTimeCounter < 500) {
             longPressTimeCounter += ChartSettings.TIME_IN_FRAME;
             LogKit.e(this, "Long pressing...");
@@ -400,7 +407,7 @@ public class DailyWeightScene extends DailyScene {
                 vib.vibrate(ChartSettings.LONG_PRESS_VIBRATE_DURATION);
             }
         }
-        return isLongPressing && Math.abs(x - oldX) < dashedLineDoteRadius*2;
+        return isLongPressing && Math.abs(x - oldX) < dashedLineDoteRadius * 2;
     }
 
     @Override

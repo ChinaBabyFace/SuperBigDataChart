@@ -13,7 +13,8 @@ import java.util.Calendar;
 import java.util.List;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity
+        implements DailyScene.DataLoader, DailyWeightScene.OnChartDatePointChangedListener {
     private ChartView weightChart;
     private DailyWeightScene dailyWeightScene;
 
@@ -22,77 +23,75 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dailyWeightScene = new DailyWeightScene(this, 50);
+        dailyWeightScene = new DailyWeightScene(this, 50, this);
+        dailyWeightScene.setOnChartDatePointChangedListener(this);
         weightChart = (ChartView) findViewById(R.id.weight_chartview);
         weightChart.setSceneAdapter(dailyWeightScene);
-        dailyWeightScene.setOnChartDatePointChangedListener(new DailyWeightScene.OnChartDatePointChangedListener() {
-            @Override
-            public void onChartDatePointChanged(ChartDatePoint point) {
+    }
 
-            }
-        });
-        dailyWeightScene.setDataLoader(new DailyScene.DataLoader() {
-            @Override
-            public List<ChartDatePoint> getData(Calendar baseDay, DailyScene.DayType dayType, int dayCount) {
-
-                List<ChartDatePoint> list = new ArrayList<>();
-
-                switch (dayType) {
-                    case HISTORY_DAY:
-                        for (int i = 0; i < dayCount; i++) {
-                            Calendar date = (Calendar) baseDay.clone();
-                            date.add(Calendar.DAY_OF_MONTH, -1 * (i + 1));
-                            ChartDatePoint dateVo = new ChartDatePoint();
-                            dateVo.setHasData(false);
-                            dateVo.setY(50);
-                            dateVo.setCalendar(date);
-                            list.add(0, dateVo);
-                        }
-                        break;
-                    case FUTURE_DAY:
-                        for (int i = 0; i < dayCount; i++) {
-                            Calendar date = (Calendar) baseDay.clone();
-                            date.add(Calendar.DAY_OF_MONTH, i + 1);
-                            ChartDatePoint dateVo = new ChartDatePoint();
-                            dateVo.setHasData(false);
-                            dateVo.setY(50);
-                            dateVo.setCalendar(date);
-                            list.add(dateVo);
-                        }
-                        break;
-                    case RECENT_DAY:
-                        for (int i = 0; i < dayCount / 2; i++) {
-                            Calendar date = (Calendar) baseDay.clone();
-                            date.add(Calendar.DAY_OF_MONTH, -1 * (i + 1));
-                            ChartDatePoint dateVo = new ChartDatePoint();
-                            dateVo.setHasData(false);
-                            dateVo.setY(50);
-                            dateVo.setCalendar(date);
-                            list.add(0, dateVo);
-                        }
-
-                        ChartDatePoint today = new ChartDatePoint();
-                        today.setY(50);
-                        today.setHasData(false);
-                        today.setCalendar(baseDay);
-                        list.add(today);
-
-                        for (int i = 0; i < dayCount / 2; i++) {
-                            Calendar date = (Calendar) baseDay.clone();
-                            date.add(Calendar.DAY_OF_MONTH, i + 1);
-                            ChartDatePoint dateVo = new ChartDatePoint();
-                            dateVo.setHasData(false);
-                            dateVo.setY(50);
-                            dateVo.setCalendar(date);
-                            list.add(dateVo);
-                        }
-
-                        break;
-                }
-                return list;
-            }
-
-        });
+    @Override
+    public void onChartDatePointChanged(ChartDatePoint point) {
 
     }
+
+    @Override
+    public List<ChartDatePoint> getData(Calendar baseDay, DailyScene.DayType dayType, int dayCount) {
+        List<ChartDatePoint> list = new ArrayList<>();
+
+        switch (dayType) {
+            case HISTORY_DAY:
+                for (int i = 0; i < dayCount; i++) {
+                    Calendar date = (Calendar) baseDay.clone();
+                    date.add(Calendar.DAY_OF_MONTH, -1 * (i + 1));
+                    ChartDatePoint dateVo = new ChartDatePoint();
+                    dateVo.setHasData(false);
+                    dateVo.setY(50);
+                    dateVo.setCalendar(date);
+                    list.add(0, dateVo);
+                }
+                break;
+            case FUTURE_DAY:
+                for (int i = 0; i < dayCount; i++) {
+                    Calendar date = (Calendar) baseDay.clone();
+                    date.add(Calendar.DAY_OF_MONTH, i + 1);
+                    ChartDatePoint dateVo = new ChartDatePoint();
+                    dateVo.setHasData(false);
+                    dateVo.setY(50);
+                    dateVo.setCalendar(date);
+                    list.add(dateVo);
+                }
+                break;
+            case RECENT_DAY:
+                for (int i = 0; i < dayCount / 2; i++) {
+                    Calendar date = (Calendar) baseDay.clone();
+                    date.add(Calendar.DAY_OF_MONTH, -1 * (i + 1));
+                    ChartDatePoint dateVo = new ChartDatePoint();
+                    dateVo.setHasData(false);
+                    dateVo.setY(50);
+                    dateVo.setCalendar(date);
+                    list.add(0, dateVo);
+                }
+
+                ChartDatePoint today = new ChartDatePoint();
+                today.setY(50);
+                today.setHasData(false);
+                today.setCalendar(baseDay);
+                list.add(today);
+
+                for (int i = 0; i < dayCount / 2; i++) {
+                    Calendar date = (Calendar) baseDay.clone();
+                    date.add(Calendar.DAY_OF_MONTH, i + 1);
+                    ChartDatePoint dateVo = new ChartDatePoint();
+                    dateVo.setHasData(false);
+                    dateVo.setY(50);
+                    dateVo.setCalendar(date);
+                    list.add(dateVo);
+                }
+
+                break;
+        }
+        return list;
+    }
+
+
 }
