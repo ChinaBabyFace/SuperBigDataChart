@@ -108,13 +108,6 @@ public class DailyWeightScene extends DailyScene {
     @Override
     public void initScene() {
         dataCache = new ArrayList<>();
-        if (getScreenHeight() > getScreenWidth()) {
-            yAxisGraduationHeight = getScreenHeight() / 10;
-            xAxisGraduationWidth = getScreenWidth() / 7;
-        } else {
-            yAxisGraduationHeight = getScreenHeight() / 7;
-            xAxisGraduationWidth = getScreenWidth() / 10;
-        }
 
         yAxisGraduationTextPaint = new Paint();
         calendarPaint = new Paint();
@@ -338,6 +331,15 @@ public class DailyWeightScene extends DailyScene {
     }
 
     public void resetChart(int canvasWidth, int canvasHeight) {
+
+        if (canvasHeight > canvasWidth) {
+            yAxisGraduationHeight = canvasHeight / 10;
+            xAxisGraduationWidth = canvasWidth / 7;
+        } else {
+            yAxisGraduationHeight = canvasHeight / 7;
+            xAxisGraduationWidth = canvasWidth / 10;
+        }
+
         minValue = dataCache.get(0).getY();
         maxValue = dataCache.get(0).getY();
         for (int j = 0; j < dataCache.size(); j++) {
@@ -348,7 +350,7 @@ public class DailyWeightScene extends DailyScene {
                 minValue = dataCache.get(j).getY();
             }
         }
-        if ((maxValue - minValue) * yAxisGraduationHeight != canvasHeight * 0.5) {
+        if ((maxValue - minValue) * yAxisGraduationHeight > canvasHeight * 0.5) {
             yAxisGraduationHeight = canvasWidth * 0.5f / (maxValue - minValue);
             yAxisGraduationHalfCount = (int) (yAxisLength / yAxisGraduationHeight * 0.5f);
             if (yAxisGraduationHalfCount < yAxisLength / xAxisGraduationWidth * 0.5f) {

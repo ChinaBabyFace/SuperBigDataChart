@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.shark.chart.point.ChartDatePoint;
 import com.shark.chart.scene.DailyScene;
+import com.shark.chart.scene.DailyStepScene;
 import com.shark.chart.scene.DailyWeightScene;
 import com.shark.chart.view.ChartView;
 
@@ -17,12 +18,24 @@ public class MainActivity extends Activity
         implements DailyScene.DataLoader, DailyWeightScene.OnChartDatePointChangedListener {
     private ChartView weightChart;
     private DailyWeightScene dailyWeightScene;
+    private DailyStepScene dailyStepScene;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        testDailyStepScene();
 
+    }
+
+    public void testDailyStepScene() {
+        dailyStepScene = new DailyStepScene(this);
+        dailyStepScene.setDataLoader(this);
+        weightChart = (ChartView) findViewById(R.id.weight_chartview);
+        weightChart.setSceneAdapter(dailyStepScene);
+    }
+
+    public void testDailyWeightScene() {
         dailyWeightScene = new DailyWeightScene(this, 50, this);
         dailyWeightScene.setOnChartDatePointChangedListener(this);
         weightChart = (ChartView) findViewById(R.id.weight_chartview);

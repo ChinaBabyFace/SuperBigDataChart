@@ -10,6 +10,7 @@ import android.graphics.PathEffect;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 
 import com.shark.chart.R;
 import com.shark.chart.point.ChartDatePoint;
@@ -51,6 +52,7 @@ public class DailyStepScene extends DailyScene {
     private float xAxisGraduationWidth = DpToPx(80);
     private int moveDayCount = 0;
     private boolean isStart=true;
+    private VelocityTracker mainVelocityTracker;
 
     public DailyStepScene(Context context) {
         super(context);
@@ -218,6 +220,10 @@ public class DailyStepScene extends DailyScene {
 
     @Override
     public void onTouch(MotionEvent event) {
+        if (mainVelocityTracker == null) {
+            mainVelocityTracker = VelocityTracker.obtain();//获得VelocityTracker类实例
+        }
+        mainVelocityTracker.addMovement(event);
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 Log.e("Touch", "Down");
@@ -227,6 +233,11 @@ public class DailyStepScene extends DailyScene {
                 //当进入节点长按模式时，只计算Y轴数值变化
                 moveX += event.getX() - oldX;
                 oldX = event.getX();
+                break;
+            case MotionEvent.ACTION_UP:
+                final VelocityTracker velocityTracker = mainVelocityTracker;
+                velocityTracker.computeCurrentVelocity(1000); //设置units的值为1000，意思为一秒时间内运动了多少个像素
+                LogKit.e(this,"VelocityTracker X:"+velocityTracker.getXVelocity());
                 break;
         }
     }
